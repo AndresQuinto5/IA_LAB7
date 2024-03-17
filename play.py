@@ -1,9 +1,37 @@
 from connect4 import *
 
+def train_qlearning_agent(game, num_episodes):
+    print("Training Q-Learning Agent...")
+    player1 = game.players[0]
+    player2 = RandomPlayer("Random", game.colors[1])
+
+    for episode in range(num_episodes):
+        game.new_game()
+        while not game.finished:
+            state = tuple(map(tuple, game.board))
+            legal_moves = [col for col in range(7) if game.board[0][col] == ' ']
+            
+            if not legal_moves:
+                break  # No valid moves available, skip to the next game
+            
+            action = player1.qlearning.choose_action(state, legal_moves)
+            game.next_move()
+            next_state = tuple(map(tuple, game.board))
+            reward = game.get_reward(player1)
+            player1.qlearning.train(state, action, reward, next_state)
+
+        if (episode + 1) % 1000 == 0:
+            print(f"Episode {episode + 1}/{num_episodes} completed.")
+
+    print("Training completed.")
+
 def main():
-    """
-    Play Connect Four games and evaluate the Q-learning agent.
-    """
+    # Training phase
+    training_game = Game()
+    num_training_episodes = 10000
+    train_qlearning_agent(training_game, num_training_episodes)
+
+    # Play phase
     game = Game()
     game.print_state()
 
@@ -12,7 +40,7 @@ def main():
 
     win_counts = [0, 0, 0]  # [player1 wins, player2 wins, ties]
 
-    num_games = 200
+    num_games = 75
     for i in range(num_games):
         print(f"Game {i+1}/{num_games}")
         while not game.finished:

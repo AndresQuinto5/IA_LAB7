@@ -26,7 +26,7 @@ class Game:
         self.winner = None
         self.turn = None
         self.players = [None, None]
-        self.game_name = u"Connect four IA_LAB06"
+        self.game_name = u"Connect four IA_LAB07"
         self.colors = ["x", "o"]
 
         # Clear the screen and display the welcome message
@@ -111,6 +111,11 @@ class Game:
         player = self.turn
         if self.round > 42:
             self.finished = True
+            return
+
+        legal_moves = [col for col in range(7) if self.board[0][col] == ' ']
+        if not legal_moves:
+            self.finished = True  # No valid moves available, game is finished
             return
 
         move = player.move(self.board)
@@ -309,3 +314,17 @@ class AIPlayer(Player):
                     best_move, _ = minimax.minimax(self.difficulty, state, self.color, True)
                 return best_move
 
+'''
+
+this class is to emulate a player and train Q-learning
+
+'''
+class RandomPlayer(Player):
+    def __init__(self, name, color):
+        self.type = "Random"
+        self.name = name
+        self.color = color
+
+    def move(self, state):
+        legal_moves = [col for col in range(7) if state[0][col] == ' ']
+        return random.choice(legal_moves)

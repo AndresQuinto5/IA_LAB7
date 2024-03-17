@@ -3,16 +3,32 @@
 ## CC3045 - Semestre I - 2024
 
 ### Descripción
-
+Este laboratorio se enfoca en la aplicación del aprendizaje por diferencia temporal (Temporal Difference Learning) en el juego Connect Four. Se requiere modificar el código del laboratorio anterior para implementar un agente que utilice TD learning y comparar su rendimiento con agentes basados en Minimax y Minimax con poda alpha-beta.
 
 ### Tareas
-- **Task 1.1:**
+- **Task 1 - Teoría:**
+  - Responder de forma clara y concisa las 5 preguntas teóricas relacionadas con TD learning, juegos simultáneos y equilibrio de Nash.
+  - Las respuestas pueden ser subidas en un PDF o dentro del mismo Jupyter Notebook.
+
+- **Task 2 - Connect Four:**
+  - Hacer una copia del laboratorio anterior y modificarlo para implementar un agente que use TD learning.
+  - Definir la representación del estado, el espacio de acción, implementar el algoritmo de aprendizaje TD, la función de actualización de valor, definir recompensas, implementar una estrategia de exploración y realizar un ciclo de entrenamiento.
+  - Opcionalmente, se puede utilizar un enfoque de Machine Learning para aproximar la función de valor.
+  - Hacer que el agente entrenado con TD learning juegue contra el agente que usa Minimax y luego contra el agente de Minimax con poda alpha-beta. Realizar al menos 50 juegos de cada caso (150 juegos en total).
+  - Graficar la cantidad de victorias de cada uno de los agentes y colocarlas en un documento PDF.
+  - Grabar un video mostrando solamente 3 juegos (uno de cada caso) y mencionar qué hace el agente entrenado con TD learning a nivel general y explicar por qué ganó más veces el agente que ganó.
 
 ### Entregables
-
+1. Link al repositorio de los integrantes del grupo.
+   - Subir también el código a Canvas por temas de Acreditación.
+2. Link al video solicitado en las instrucciones.
 
 ### Evaluación
-- 
+- [1.25 pts.] Task 1 (0.25 cada pregunta)
+- [2.25 pts.] Task 2 - Agente
+- [0.75 pts.] Task 2 - Gráficas
+- [0.75 pts.] Task 2 - Video
+Total: 5 pts.
 
 ## Requisitos Previos (Usamos CONDA !! :D)
 

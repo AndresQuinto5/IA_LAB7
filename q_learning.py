@@ -12,6 +12,9 @@ class QLearning:
         self.q_table = {}
         self.episode = 0
 
+    def train(self, state, action, reward, next_state):
+        self.update_q_table(state, action, reward, next_state)
+
     def get_q_value(self, state, action):
         if (state, action) not in self.q_table:
             self.q_table[(state, action)] = 0.0
