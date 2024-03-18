@@ -1,27 +1,34 @@
 from connect4 import *
+from tqdm import tqdm
 
+'''
+we are gonna use tqdm to show the progress of our training
+'''
 def train_qlearning_agent(game, num_episodes):
     print("Training Q-Learning Agent...")
     player1 = game.players[0]
     player2 = RandomPlayer("Random", game.colors[1])
 
-    for episode in range(num_episodes):
+    if player1.algorithm != "Q-Learning":
+        print("Player 1 is not using the Q-Learning algorithm. Training aborted.")
+        return
+
+    player1.qlearning.episode = 0  # Reset episode count before training
+
+    for episode in tqdm(range(num_episodes), desc="Training Progress"):
         game.new_game()
         while not game.finished:
             state = tuple(map(tuple, game.board))
             legal_moves = [col for col in range(7) if game.board[0][col] == ' ']
-            
+
             if not legal_moves:
                 break  # No valid moves available, skip to the next game
-            
+
             action = player1.qlearning.choose_action(state, legal_moves)
             game.next_move()
             next_state = tuple(map(tuple, game.board))
             reward = game.get_reward(player1)
             player1.qlearning.train(state, action, reward, next_state)
-
-        if (episode + 1) % 1000 == 0:
-            print(f"Episode {episode + 1}/{num_episodes} completed.")
 
     print("Training completed.")
 

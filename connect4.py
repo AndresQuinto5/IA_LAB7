@@ -58,6 +58,7 @@ class Game:
                 elif choice == 'c':
                     name = input(f"What is Player {i + 1}'s name? ")
                     algorithm = None
+                    qlearning = None
                     while algorithm is None:
                         algo_choice = input(f"Select an algorithm for {name}:\n1. Minimax\n2. Alpha-Beta\n3. Q-Learning\nEnter your choice (1/2/3): ")
                         if algo_choice == "1":
@@ -66,9 +67,10 @@ class Game:
                             algorithm = "Alpha-Beta"
                         elif algo_choice == "3":
                             algorithm = "Q-Learning"
+                            qlearning = QLearning(alpha=0.5, gamma=0.9, epsilon=1.0, epsilon_decay_rate=0.995, alpha_decay=0.001, num_actions=7)
                         else:
                             print("Invalid choice, please try again.")
-                    self.players[i] = AIPlayer(name, self.colors[i], 5, algorithm)
+                    self.players[i] = AIPlayer(name, self.colors[i], 5, algorithm, qlearning)
                 else:
                     print("Invalid choice, please try again.")
             print(f"{self.players[i].name} will be {self.colors[i]} using {self.players[i].algorithm if self.players[i].type == 'AI' else 'Human'} algorithm")
@@ -134,11 +136,11 @@ class Game:
 
     def get_reward(self, player):
         if self.winner == player:
-            return 1
+            return 100
         elif self.winner is None:
             return 0
         else:
-            return -1
+            return -100
     
     def check_for_fours(self):
         """
@@ -285,41 +287,40 @@ class Player:
         return column
 
 class AIPlayer(Player):
-        
-        """
+    """
         AIPlayer object that extends the Player class.
         The AI algorithm is minimax with optional alpha-beta pruning.
-        """
-        def __init__(self, name, color, difficulty=5, algorithm=None):
-            self.type = "AI"
-            self.name = name
-            self.color = color
-            self.difficulty = difficulty
-            self.algorithm = algorithm
-            self.minimax = Minimax([])
-            if algorithm == "Q-Learning":
-                self.qlearning = QLearning(alpha=0.8, gamma=0.8, epsilon=0.3, epsilon_decay=0.99, num_actions=7)
+    """
+    def __init__(self, name, color, difficulty=5, algorithm=None, qlearning=None):
+        self.type = "AI"
+        self.name = name
+        self.color = color
+        self.difficulty = difficulty
+        self.algorithm = algorithm
+        self.minimax = Minimax([])
+        if algorithm == "Q-Learning":
+            self.qlearning = qlearning
 
-        def move(self, state):
-            print(f"{self.name}'s turn. {self.name} is {self.color}")
-            if self.algorithm == "Q-Learning":
-                legal_moves = [col for col in range(7) if self.minimax.is_legal_move(col, state)]
-                action = self.qlearning.choose_action(tuple(map(tuple, state)), legal_moves)
-                return action
-            else:
-                minimax = Minimax(state)
-                if self.algorithm == "Minimax":
-                    best_move, _ = minimax.minimax(self.difficulty, state, self.color, False)
-                elif self.algorithm == "Alpha-Beta":
-                    best_move, _ = minimax.minimax(self.difficulty, state, self.color, True)
-                return best_move
+    def move(self, state):
+        print(f"{self.name}'s turn. {self.name} is {self.color}")
+        if self.algorithm == "Q-Learning":
+            legal_moves = [col for col in range(7) if self.minimax.is_legal_move(col, state)]
+            action = self.qlearning.choose_action(tuple(map(tuple, state)), legal_moves)
+            return action
+        else:
+            minimax = Minimax(state)
+            if self.algorithm == "Minimax":
+                best_move, _ = minimax.minimax(self.difficulty, state, self.color, False)
+            elif self.algorithm == "Alpha-Beta":
+                best_move, _ = minimax.minimax(self.difficulty, state, self.color, True)
+            return best_move
 
-'''
-
-this class is to emulate a player and train Q-learning
-
-'''
 class RandomPlayer(Player):
+    '''
+
+    this class is to emulate a player and train Q-learning
+
+    '''
     def __init__(self, name, color):
         self.type = "Random"
         self.name = name
