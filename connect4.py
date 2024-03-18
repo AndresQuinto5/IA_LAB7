@@ -139,13 +139,14 @@ class Game:
 
         print("Invalid move (column is full)")
 
+
     def get_reward(self, player):
-        if self.winner == player:
-            return 100
-        elif self.winner is None:
-            return 0
-        else:
-            return -100
+            if self.winner == player:
+                return 100
+            elif self.winner is None:
+                return 0
+            else:
+                return -100
     
     def check_for_fours(self):
         """

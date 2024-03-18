@@ -1,10 +1,23 @@
 from connect4 import *
 from tqdm import tqdm
 
-'''
-we are gonna use tqdm to show the progress of our training
-'''
 def train_qlearning_agent(game, num_episodes):
+    
+    """
+    we are gonna use tqdm to show the progress of our training
+
+    Trains a QLearningAgent on the Connect4 game by playing against
+    a RandomPlayer opponent for a specified number of episodes.
+
+    The QLearningAgent's experience is stored in a Q-table that maps
+    game states to expected rewards for possible actions. The trained
+    Q-table is saved to a file after completing all episodes.
+
+    Args:
+    game: A Connect4 game instance.
+    num_episodes: Number of complete games to play against the RandomPlayer opponent.
+    """
+
     print("Training Q-Learning Agent...")
     player1 = game.players[0]
     player2 = RandomPlayer("Random", game.colors[1])
@@ -33,7 +46,22 @@ def train_qlearning_agent(game, num_episodes):
     player1.qlearning.save_q_table('trained_q_table.pkl')
     print("Training completed.")
 
+
 def play_matches(game, num_games):
+    """
+    Play a number of matches between two players, keeping track of wins for each.
+
+    Loads trained Q-tables if players are using Q-learning. 
+    Plays full games, printing the final board each time.
+    After all games, prints the win counts for each player and ties.
+
+    Args:
+    game: Game to play matches in 
+    num_games: Number of games to play
+
+    Returns:
+    None
+    """
     print("Playing matches...")
     player1 = game.players[0]
     player2 = game.players[1]
