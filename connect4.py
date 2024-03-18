@@ -28,6 +28,8 @@ class Game:
         self.players = [None, None]
         self.game_name = u"Connect four IA_LAB07"
         self.colors = ["x", "o"]
+        # Randomly select the first player
+        self.turn = random.choice(self.players)
 
         # Clear the screen and display the welcome message
         os.system(['clear', 'cls'][os.name == 'nt'])
@@ -65,23 +67,26 @@ class Game:
                             algorithm = "Minimax"
                         elif algo_choice == "2":
                             algorithm = "Alpha-Beta"
+                            difficulty = 1  # Reduce the difficulty for alpha-beta pruning
                         elif algo_choice == "3":
                             algorithm = "Q-Learning"
                             qlearning = QLearning(alpha=0.5, gamma=0.9, epsilon=1.0, epsilon_decay_rate=0.995, alpha_decay=0.001, num_actions=7)
                         else:
                             print("Invalid choice, please try again.")
-                    self.players[i] = AIPlayer(name, self.colors[i], 5, algorithm, qlearning)
+                    self.players[i] = AIPlayer(name, self.colors[i], difficulty if algorithm == "Alpha-Beta" else 5, algorithm, qlearning)
                 else:
                     print("Invalid choice, please try again.")
             print(f"{self.players[i].name} will be {self.colors[i]} using {self.players[i].algorithm if self.players[i].type == 'AI' else 'Human'} algorithm")
 
     def first_move_random(self):
         """
-        Makes the first move random.
+        Makes the first move random for Minimax and Alpha-Beta algorithms.
         """
-        random_column = random.randint(0, 6)
-        self.board[0][random_column] = self.turn.color
-        self.switch_turn()
+        if self.turn.algorithm in ["Minimax", "Alpha-Beta"]:
+            legal_moves = [col for col in range(7) if self.board[0][col] == ' ']
+            move = random.choice(legal_moves)
+            self.board[0][move] = self.turn.color
+            self.switch_turn()
 
     def new_game(self):
         """
@@ -90,9 +95,9 @@ class Game:
         self.round = 1
         self.finished = False
         self.winner = None
-        self.turn = self.players[0]
+        self.turn = random.choice(self.players)  # Randomly select the first player
         self.board = [[' ' for _ in range(7)] for _ in range(6)]
-        self.first_move_random()  # Make the first move random
+        self.first_move_random()  # Make the first move random for Minimax and Alpha-Beta algorithms
 
         # Reset the episode count for Q-learning agents
         for player in self.players:
@@ -291,7 +296,7 @@ class AIPlayer(Player):
         AIPlayer object that extends the Player class.
         The AI algorithm is minimax with optional alpha-beta pruning.
     """
-    def __init__(self, name, color, difficulty=5, algorithm=None, qlearning=None):
+    def __init__(self, name, color, difficulty=1, algorithm=None, qlearning=None):
         self.type = "AI"
         self.name = name
         self.color = color
@@ -300,6 +305,7 @@ class AIPlayer(Player):
         self.minimax = Minimax([])
         if algorithm == "Q-Learning":
             self.qlearning = qlearning
+            self.qlearning.load_q_table('trained_q_table.pkl')  # Load the trained Q-table
 
     def move(self, state):
         print(f"{self.name}'s turn. {self.name} is {self.color}")

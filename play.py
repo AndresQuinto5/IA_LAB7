@@ -30,26 +30,25 @@ def train_qlearning_agent(game, num_episodes):
             reward = game.get_reward(player1)
             player1.qlearning.train(state, action, reward, next_state)
 
+    player1.qlearning.save_q_table('trained_q_table.pkl')
     print("Training completed.")
 
-def main():
-    # Training phase
-    training_game = Game()
-    num_training_episodes = 10000
-    train_qlearning_agent(training_game, num_training_episodes)
-
-    # Play phase
-    game = Game()
-    game.print_state()
-
+def play_matches(game, num_games):
+    print("Playing matches...")
     player1 = game.players[0]
     player2 = game.players[1]
 
+    if player1.algorithm == "Q-Learning":
+        player1.qlearning.load_q_table('trained_q_table.pkl')
+    elif player2.algorithm == "Q-Learning":
+        player2.qlearning.load_q_table('trained_q_table.pkl')
+
     win_counts = [0, 0, 0]  # [player1 wins, player2 wins, ties]
 
-    num_games = 75
     for i in range(num_games):
         print(f"Game {i+1}/{num_games}")
+        game.new_game()
+        
         while not game.finished:
             game.next_move()
 
@@ -62,9 +61,20 @@ def main():
         else:
             win_counts[1] += 1
 
-        game.new_game()
-
     print_stats(player1, player2, win_counts)
+
+def main():
+    # Training phase
+    training_game = Game()
+    num_training_episodes = 20000
+    train_qlearning_agent(training_game, num_training_episodes)
+
+    # Play phase
+    game = Game()
+    game.print_state()
+
+    num_games = 75
+    play_matches(game, num_games)
 
 def print_stats(player1, player2, win_counts):
     """

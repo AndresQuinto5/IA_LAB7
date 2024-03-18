@@ -1,6 +1,7 @@
 import numpy as np
 import random
 import math
+import pickle
 
 class QLearning:
     def __init__(self, alpha, gamma, epsilon, epsilon_decay_rate, alpha_decay, num_actions):
@@ -46,3 +47,14 @@ class QLearning:
 
     def reset_episode(self):
         self.episode = 0
+        
+    def save_q_table(self, filename):
+        with open(filename, 'wb') as file:
+            pickle.dump(self.q_table, file)
+
+    def load_q_table(self, filename):
+        try:
+            with open(filename, 'rb') as file:
+                self.q_table = pickle.load(file)
+        except FileNotFoundError:
+            print("Q-table file not found. Starting with an empty Q-table.")
