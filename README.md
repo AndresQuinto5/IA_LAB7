@@ -79,6 +79,7 @@ Navegue hasta el notebook que desea ejecutar y ábralo. Ahora debería ser capaz
 
 ### VIDEO:
 
+[VIDEO](https://youtu.be/gbDOsF4d3p4)
 
 ### Autores
 - [Andres Quinto - 18288](https://github.com/AndresQuinto5)

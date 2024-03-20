@@ -45,6 +45,7 @@ def train_qlearning_agent(game, num_episodes):
 
     player1.qlearning.save_q_table('trained_q_table.pkl')
     print("Training completed.")
+    print("We overwrite the new trained Q-table with the old one.")
 
 
 def play_matches(game, num_games):
@@ -67,8 +68,10 @@ def play_matches(game, num_games):
     player2 = game.players[1]
 
     if player1.algorithm == "Q-Learning":
+        print("Loading Q-table for player 1...")
         player1.qlearning.load_q_table('trained_q_table.pkl')
     elif player2.algorithm == "Q-Learning":
+        print("Loading Q-table for player 2...")
         player2.qlearning.load_q_table('trained_q_table.pkl')
 
     win_counts = [0, 0, 0]  # [player1 wins, player2 wins, ties]
@@ -94,25 +97,35 @@ def play_matches(game, num_games):
 def main():
     # Training phase
     training_game = Game()
-    num_training_episodes = 20000
+    num_training_episodes = 30000
     train_qlearning_agent(training_game, num_training_episodes)
 
-    # Play phase
+    # Play phase mini-max
     game = Game()
     game.print_state()
+    num_games = 75
+    play_matches(game, num_games)
 
+    input("Press Enter to continue to the next set of matches...")
+
+    # Play phase alfa-beta pruning
+    game = Game()
+    game.print_state()
     num_games = 75
     play_matches(game, num_games)
 
 def print_stats(player1, player2, win_counts):
     """
-    Print the game statistics.
+    Print the game statistics in a tabular format.
     """
     total_games = sum(win_counts)
-    print(f"\nResults after {total_games} games:")
-    print(f"{player1.name} ({player1.type} - {player1.algorithm}): {win_counts[0]} wins")
-    print(f"{player2.name} ({player2.type} - {player2.algorithm}): {win_counts[1]} wins")
-    print(f"Ties: {win_counts[2]}")
+    print("\nResults after {total_games} games:")
+    print("{:<20} {:<20} {:<10} {:<10}".format("Player", "Algorithm", "Wins", "Win Rate"))
+    print("-" * 60)
+
+    print("{:<20} {:<20} {:<10} {:.2f}".format(player1.name, f"{player1.type} - {player1.algorithm}", win_counts[0], win_counts[0] / total_games))
+    print("{:<20} {:<20} {:<10} {:.2f}".format(player2.name, f"{player2.type} - {player2.algorithm}", win_counts[1], win_counts[1] / total_games))
+    print("{:<20} {:<20} {:<10} {:.2f}".format("Ties", "-", win_counts[2], win_counts[2] / total_games))
 
     if player1.algorithm == "Q-Learning":
         print(f"\n{player1.name} (Q-Learning) Evaluation:")
@@ -124,6 +137,8 @@ def print_stats(player1, player2, win_counts):
         print(f"Win rate: {win_counts[1] / total_games:.2f}")
         print(f"Tie rate: {win_counts[2] / total_games:.2f}")
         print(f"Loss rate: {win_counts[0] / total_games:.2f}")
+    
+    input("Press Enter to continue...")
 
 if __name__ == "__main__":
     main()

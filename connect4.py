@@ -13,6 +13,8 @@ https://www.askpython.com/python/examples/connect-four-game
 For the board and states:
 https://oscarnieves100.medium.com/programming-a-connect-4-game-on-python-f0e787a3a0cf
 
+Paper contrasting differents performance algorithms:
+https://www.tandfonline.com/doi/full/10.1080/08839514.2021.1934265 
 """
 class Game:
     """
@@ -70,7 +72,7 @@ class Game:
                             difficulty = 1  # Reduce the difficulty for alpha-beta pruning
                         elif algo_choice == "3":
                             algorithm = "Q-Learning"
-                            qlearning = QLearning(alpha=0.5, gamma=0.9, epsilon=1.0, epsilon_decay_rate=0.995, alpha_decay=0.001, num_actions=7)
+                            qlearning = QLearning(alpha=0.8, gamma=0.99, epsilon=1.0, epsilon_decay_rate=0.999, alpha_decay=0.001, num_actions=7)
                         else:
                             print("Invalid choice, please try again.")
                     self.players[i] = AIPlayer(name, self.colors[i], difficulty if algorithm == "Alpha-Beta" else 5, algorithm, qlearning)

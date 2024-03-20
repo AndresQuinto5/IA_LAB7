@@ -137,6 +137,7 @@ class QLearning:
         Parameters:
         - filename: Name of the file to load the Q-table from.
         """
+        print ("Rock and LOAD !!!")
         try:
             with open(filename, 'rb') as file:
                 self.q_table = pickle.load(file)
